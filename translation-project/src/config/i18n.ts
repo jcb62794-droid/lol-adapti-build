@@ -1,12 +1,19 @@
-import i18n from 'i18n';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
-i18n.configure({
-    locales: ['en', 'pt-BR'],
-    directory: __dirname + '/../locales',
-    defaultLocale: 'pt-BR',
-    autoReload: true,
-    syncFiles: true,
-    cookie: 'lang',
-});
+import en from '../locales/en/translation.json';
+import ptBR from '../locales/pt-BR/translation.json';
+
+i18n
+  .use(initReactI18next)
+  .init({
+    resources: {
+      en: { translation: en },
+      'pt-BR': { translation: ptBR },
+    },
+    lng: localStorage.getItem('lang') || 'pt-BR',
+    fallbackLng: 'pt-BR',
+    interpolation: { escapeValue: false },
+  });
 
 export default i18n;

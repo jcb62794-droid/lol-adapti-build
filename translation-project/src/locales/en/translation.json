@@ -1,0 +1,11 @@
+{
+  "welcome": "Welcome to your Lovable project",
+  "projectInfo": "Project info",
+  "howToEdit": "How can I edit this code?",
+  "technologies": "Technologies used",
+  "startInstructions": "Start the dev server with npm run dev",
+  "chooseLanguagePrompt": "Please choose your language",
+  "portuguese": "Português (Brasil)",
+  "english": "English",
+  "changeLanguage": "Change language"
+}
