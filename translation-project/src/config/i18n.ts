@@ -9,11 +9,11 @@ i18n
   .init({
     resources: {
       en: { translation: en },
-      'pt-BR': { translation: ptBR },
+      'pt-BR': { translation: ptBR }
     },
-    lng: localStorage.getItem('lang') || 'pt-BR',
+    lng: localStorage?.getItem?.('lang') || 'pt-BR',
     fallbackLng: 'pt-BR',
-    interpolation: { escapeValue: false },
+    interpolation: { escapeValue: false }
   });
 
 export default i18n;
