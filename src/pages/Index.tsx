@@ -6,17 +6,17 @@ import MatchTracker from "@/components/MatchTracker";
 import ChampionAnalysis from "@/components/ChampionAnalysis";
 import AISettings from "@/components/AISettings";
 import logoImage from "@/assets/lol-ai-logo.jpg";
-import bladeRuinedKingImage from "@/assets/items/blade-ruined-king.jpg";
-import infinityEdgeImage from "@/assets/items/infinity-edge.jpg";
-import guardianAngelImage from "@/assets/items/guardian-angel.jpg";
-import berserkersGeavesImage from "@/assets/items/berserkers-greaves.jpg";
-import phantomDancerImage from "@/assets/items/phantom-dancer.jpg";
-import lordDominiksImage from "@/assets/items/lord-dominiks.jpg";
-import jinxImage from "@/assets/champions/jinx.jpg";
-import vayneImage from "@/assets/champions/vayne.jpg";
-import caitlynImage from "@/assets/champions/caitlyn.jpg";
-import kaisaImage from "@/assets/champions/kaisa.jpg";
-import asheImage from "@/assets/champions/ashe.jpg";
+import bladeRuinedKingImage from "@/assets/items/blade-ruined-king.png";
+import infinityEdgeImage from "@/assets/items/infinity-edge.png";
+import guardianAngelImage from "@/assets/items/guardian-angel.png";
+import berserkersGeavesImage from "@/assets/items/berserkers-greaves.png";
+import phantomDancerImage from "@/assets/items/phantom-dancer.png";
+import lordDominiksImage from "@/assets/items/lord-dominiks.png";
+import jinxImage from "@/assets/champions/jinx.png";
+import vayneImage from "@/assets/champions/vayne.png";
+import caitlynImage from "@/assets/champions/caitlyn.png";
+import kaisaImage from "@/assets/champions/kaisa.png";
+import asheImage from "@/assets/champions/ashe.png";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("builds");

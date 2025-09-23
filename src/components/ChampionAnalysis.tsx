@@ -4,12 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import jinxImage from "@/assets/champions/jinx.jpg";
-import vayneImage from "@/assets/champions/vayne.jpg";
-import caitlynImage from "@/assets/champions/caitlyn.jpg";
-import kaisaImage from "@/assets/champions/kaisa.jpg";
-import asheImage from "@/assets/champions/ashe.jpg";
-import dravenImage from "@/assets/champions/draven.jpg";
+import jinxImage from "@/assets/champions/jinx.png";
+import vayneImage from "@/assets/champions/vayne.png";
+import caitlynImage from "@/assets/champions/caitlyn.png";
+import kaisaImage from "@/assets/champions/kaisa.png";
+import asheImage from "@/assets/champions/ashe.png";
+import dravenImage from "@/assets/champions/draven.png";
 
 interface ChampionStat {
   name: string;
