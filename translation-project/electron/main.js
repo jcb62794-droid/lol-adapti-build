@@ -36,3 +36,11 @@ app.on('activate', () => {
 window.addEventListener('DOMContentLoaded', () => {
   // placeholder
 });
+
+// Scripts
+{
+  "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+  "build": "vite build",
+  "preview": "vite preview",
+  "dist": "vite build && electron-builder --win --x64"
+}
