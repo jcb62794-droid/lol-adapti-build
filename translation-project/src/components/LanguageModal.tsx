@@ -28,14 +28,10 @@ export default function LanguageModal() {
         background: '#fff', boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
         textAlign: 'center'
       }}>
-        <h3 style={{ marginBottom: 12 }}>{i18n.t('chooseLanguagePrompt')}</h3>
+        <h3>{i18n.t('chooseLanguagePrompt')}</h3>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-          <button onClick={() => choose('pt-BR')} style={{ padding: '8px 12px' }}>
-            {i18n.t('portuguese')}
-          </button>
-          <button onClick={() => choose('en')} style={{ padding: '8px 12px' }}>
-            {i18n.t('english')}
-          </button>
+          <button onClick={() => choose('pt-BR')}>{i18n.t('portuguese')}</button>
+          <button onClick={() => choose('en')}>{i18n.t('english')}</button>
         </div>
       </div>
     </div>
