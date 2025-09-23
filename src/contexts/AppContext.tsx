@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { translations } from '@/data/translations';
 
 type Language = 'pt_BR' | 'en';
@@ -25,7 +25,7 @@ interface AppProviderProps {
   children: ReactNode;
 }
 
-export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
+export const AppProvider = ({ children }: AppProviderProps) => {
   const [language, setLanguage] = useState<Language>('pt_BR');
   const [devMode, setDevMode] = useState(false);
 

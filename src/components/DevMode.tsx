@@ -1,4 +1,3 @@
-import React from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,7 @@ import { DatabaseView } from './DatabaseView';
 import { champions } from '@/data/champions';
 import { items } from '@/data/items';
 
-export const DevMode: React.FC = () => {
+export const DevMode = () => {
   const { t, language, setLanguage, devMode, setDevMode } = useApp();
 
   return (
