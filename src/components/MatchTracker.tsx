@@ -3,6 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import jinxImage from "@/assets/champions/jinx.jpg";
+import caitlynImage from "@/assets/champions/caitlyn.jpg";
+import kaisaImage from "@/assets/champions/kaisa.jpg";
+import vayneImage from "@/assets/champions/vayne.jpg";
+import asheImage from "@/assets/champions/ashe.jpg";
 
 interface Player {
   name: string;

@@ -4,6 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import jinxImage from "@/assets/champions/jinx.jpg";
+import vayneImage from "@/assets/champions/vayne.jpg";
+import caitlynImage from "@/assets/champions/caitlyn.jpg";
+import kaisaImage from "@/assets/champions/kaisa.jpg";
+import asheImage from "@/assets/champions/ashe.jpg";
+import dravenImage from "@/assets/champions/draven.jpg";
 
 interface ChampionStat {
   name: string;
@@ -20,11 +26,13 @@ interface ChampionData {
   pickRate: number;
   banRate: number;
   difficulty: number;
+  image?: string;
   stats: ChampionStat[];
   matchups: {
     name: string;
     winRate: number;
     difficulty: 'easy' | 'medium' | 'hard';
+    image?: string;
   }[];
 }
 
@@ -38,6 +46,7 @@ const ChampionAnalysis = () => {
     pickRate: 8.7,
     banRate: 2.1,
     difficulty: 6,
+    image: jinxImage,
     stats: [
       { name: "Early Game", value: 85, rank: 'A', trend: 'up' },
       { name: "Mid Game", value: 92, rank: 'S', trend: 'up' },
@@ -46,11 +55,11 @@ const ChampionAnalysis = () => {
       { name: "Objective Control", value: 78, rank: 'B', trend: 'down' }
     ],
     matchups: [
-      { name: "Vayne", winRate: 45, difficulty: 'hard' },
-      { name: "Caitlyn", winRate: 52, difficulty: 'medium' },
-      { name: "Ashe", winRate: 58, difficulty: 'easy' },
-      { name: "Kai'Sa", winRate: 49, difficulty: 'medium' },
-      { name: "Draven", winRate: 43, difficulty: 'hard' }
+      { name: "Vayne", winRate: 45, difficulty: 'hard', image: vayneImage },
+      { name: "Caitlyn", winRate: 52, difficulty: 'medium', image: caitlynImage },
+      { name: "Ashe", winRate: 58, difficulty: 'easy', image: asheImage },
+      { name: "Kai'Sa", winRate: 49, difficulty: 'medium', image: kaisaImage },
+      { name: "Draven", winRate: 43, difficulty: 'hard', image: dravenImage }
     ]
   });
 
@@ -116,8 +125,16 @@ const ChampionAnalysis = () => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center text-2xl font-bold">
-                {selectedChampion.name.slice(0, 2)}
+              <div className="w-16 h-16 bg-primary rounded-lg overflow-hidden flex items-center justify-center">
+                {selectedChampion.image ? (
+                  <img 
+                    src={selectedChampion.image} 
+                    alt={selectedChampion.name} 
+                    className="w-full h-full object-cover" 
+                  />
+                ) : (
+                  <span className="text-2xl font-bold">{selectedChampion.name.slice(0, 2)}</span>
+                )}
               </div>
               <div>
                 <CardTitle className="text-2xl">{selectedChampion.name}</CardTitle>
@@ -188,8 +205,16 @@ const ChampionAnalysis = () => {
                 className={`flex items-center justify-between p-3 rounded-lg border-2 ${getMatchupColor(matchup.difficulty)}`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center font-bold text-sm">
-                    {matchup.name.slice(0, 2)}
+                  <div className="w-10 h-10 bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
+                    {matchup.image ? (
+                      <img 
+                        src={matchup.image} 
+                        alt={matchup.name} 
+                        className="w-full h-full object-cover" 
+                      />
+                    ) : (
+                      <span className="font-bold text-sm">{matchup.name.slice(0, 2)}</span>
+                    )}
                   </div>
                   <div>
                     <div className="font-medium">{matchup.name}</div>

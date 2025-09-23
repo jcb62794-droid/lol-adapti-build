@@ -6,6 +6,17 @@ import MatchTracker from "@/components/MatchTracker";
 import ChampionAnalysis from "@/components/ChampionAnalysis";
 import AISettings from "@/components/AISettings";
 import logoImage from "@/assets/lol-ai-logo.jpg";
+import bladeRuinedKingImage from "@/assets/items/blade-ruined-king.jpg";
+import infinityEdgeImage from "@/assets/items/infinity-edge.jpg";
+import guardianAngelImage from "@/assets/items/guardian-angel.jpg";
+import berserkersGeavesImage from "@/assets/items/berserkers-greaves.jpg";
+import phantomDancerImage from "@/assets/items/phantom-dancer.jpg";
+import lordDominiksImage from "@/assets/items/lord-dominiks.jpg";
+import jinxImage from "@/assets/champions/jinx.jpg";
+import vayneImage from "@/assets/champions/vayne.jpg";
+import caitlynImage from "@/assets/champions/caitlyn.jpg";
+import kaisaImage from "@/assets/champions/kaisa.jpg";
+import asheImage from "@/assets/champions/ashe.jpg";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("builds");
@@ -14,27 +25,27 @@ const Index = () => {
   const buildData = {
     perfect: {
       items: [
-        { id: "1", name: "Galeforce", cost: 3400, stats: ["+55 AD", "+20% Crit", "+7% MS"] },
-        { id: "2", name: "The Collector", cost: 3000, stats: ["+55 AD", "+20% Crit", "+12 Lethality"] },
-        { id: "3", name: "Infinity Edge", cost: 3400, stats: ["+70 AD", "+20% Crit", "35% Crit DMG"] }
+        { id: "1", name: "Blade of the Ruined King", cost: 3400, stats: ["+40 AD", "+25% AS", "+12% Life Steal"], image: bladeRuinedKingImage },
+        { id: "2", name: "Guardian Angel", cost: 2800, stats: ["+40 AD", "+40 Armor", "Passive: Revive"], image: guardianAngelImage },
+        { id: "3", name: "Infinity Edge", cost: 3400, stats: ["+70 AD", "+20% Crit", "35% Crit DMG"], image: infinityEdgeImage }
       ],
       winRate: 87,
       confidence: 94
     },
     better: {
       items: [
-        { id: "4", name: "Kraken Slayer", cost: 3400, stats: ["+65 AD", "+25% AS", "+20% Crit"] },
-        { id: "5", name: "Phantom Dancer", cost: 2600, stats: ["+25% AS", "+20% Crit", "+7% MS"] },
-        { id: "6", name: "Lord Dominik", cost: 3000, stats: ["+35 AD", "+20% Crit", "+35% Armor Pen"] }
+        { id: "4", name: "Blade of the Ruined King", cost: 3400, stats: ["+40 AD", "+25% AS", "+12% Life Steal"], image: bladeRuinedKingImage },
+        { id: "5", name: "Phantom Dancer", cost: 2600, stats: ["+25% AS", "+20% Crit", "+7% MS"], image: phantomDancerImage },
+        { id: "6", name: "Lord Dominik's Regards", cost: 3000, stats: ["+35 AD", "+20% Crit", "+35% Armor Pen"], image: lordDominiksImage }
       ],
       winRate: 78,
       confidence: 87
     },
     good: {
       items: [
-        { id: "7", name: "Immortal Shieldbow", cost: 3400, stats: ["+50 AD", "+20% AS", "+20% Crit"] },
-        { id: "8", name: "Berserker's Greaves", cost: 1100, stats: ["+35% AS", "+45 MS"] },
-        { id: "9", name: "Runaan's Hurricane", cost: 2600, stats: ["+40% AS", "+20% Crit", "Bolts"] }
+        { id: "7", name: "Guardian Angel", cost: 2800, stats: ["+40 AD", "+40 Armor", "Passive: Revive"], image: guardianAngelImage },
+        { id: "8", name: "Berserker's Greaves", cost: 1100, stats: ["+35% AS", "+45 MS"], image: berserkersGeavesImage },
+        { id: "9", name: "Phantom Dancer", cost: 2600, stats: ["+25% AS", "+20% Crit", "+7% MS"], image: phantomDancerImage }
       ],
       winRate: 65,
       confidence: 72
@@ -180,13 +191,23 @@ const Index = () => {
                   <CardTitle>Campeões Mais Jogados</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {["Jinx", "Caitlyn", "Kai'Sa", "Vayne", "Ashe"].map((champ, index) => (
-                    <div key={champ} className="flex items-center justify-between p-2 rounded bg-secondary">
+                  {[
+                    { name: "Jinx", image: jinxImage },
+                    { name: "Caitlyn", image: caitlynImage },
+                    { name: "Kai'Sa", image: kaisaImage },
+                    { name: "Vayne", image: vayneImage },
+                    { name: "Ashe", image: asheImage }
+                  ].map((champ, index) => (
+                    <div key={champ.name} className="flex items-center justify-between p-2 rounded bg-secondary">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-xs font-bold">
-                          {champ.slice(0, 2)}
+                        <div className="w-8 h-8 bg-primary rounded-full overflow-hidden flex items-center justify-center">
+                          <img 
+                            src={champ.image} 
+                            alt={champ.name} 
+                            className="w-full h-full object-cover" 
+                          />
                         </div>
-                        <span className="font-medium">{champ}</span>
+                        <span className="font-medium">{champ.name}</span>
                       </div>
                       <div className="text-sm font-medium text-success">
                         {(85 - index * 5)}%
