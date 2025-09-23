@@ -1,15 +1,16 @@
-translation-project
-├── src
-│   ├── app.ts
-│   ├── locales
-│   │   ├── en
-│   │   │   └── translations.json
-│   │   └── pt-BR
-│   │       └── translations.json
-│   ├── config
-│   │   └── i18n.ts
-│   └── types
-│       └── index.ts
-├── package.json
-├── tsconfig.json
-└── README.md
+﻿{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "strict": false,
+    "outDir": "dist"
+  },
+  "include": ["src/**/*", "electron/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
