@@ -1,104 +1,95 @@
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import React from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { useApp } from '@/contexts/AppContext';
+import { items, getMetaItemsForChampion } from '@/data/items';
 
-interface BuildItem {
-  id: string;
-  name: string;
-  cost: number;
-  stats: string[];
-  image?: string;
-}
+export const BuildRecommendation = () => {
+  const { t } = useApp();
 
-interface BuildRecommendationProps {
-  type: 'perfect' | 'better' | 'good';
-  items: BuildItem[];
-  winRate: number;
-  confidence: number;
-}
-
-const BuildRecommendation = ({ type, items, winRate, confidence }: BuildRecommendationProps) => {
-  const getVariant = () => {
-    switch (type) {
-      case 'perfect': return 'perfect';
-      case 'better': return 'better';
-      default: return 'good';
+  // Mock data - substituir por dados reais da IA
+  const builds = [
+    {
+      type: 'perfect',
+      title: t('perfect_build'),
+      items: getMetaItemsForChampion('ADC', 'AD').slice(0, 3),
+      winRate: 87,
+      confidence: 94
+    },
+    {
+      type: 'better', 
+      title: t('better_build'),
+      items: getMetaItemsForChampion('ADC', 'AD').slice(1, 4),
+      winRate: 78,
+      confidence: 87
+    },
+    {
+      type: 'good',
+      title: t('good_build'),
+      items: getMetaItemsForChampion('ADC', 'AD').slice(2, 5),
+      winRate: 65,
+      confidence: 72
     }
-  };
+  ];
 
-  const getTitle = () => {
+  const getBorderColor = (type: string) => {
     switch (type) {
-      case 'perfect': return 'Build Perfeita';
-      case 'better': return 'Melhor Build';
-      default: return 'Boa Build';
-    }
-  };
-
-  const getBadgeColor = () => {
-    switch (type) {
-      case 'perfect': return 'bg-gradient-perfect';
-      case 'better': return 'bg-gradient-better';
-      default: return 'bg-gradient-good';
+      case 'perfect': return 'border-yellow-500';
+      case 'better': return 'border-green-500';
+      default: return 'border-blue-500';
     }
   };
 
   return (
-    <Card className={`relative overflow-hidden border-2 transition-all duration-300 hover:shadow-glow ${
-      type === 'perfect' ? 'border-accent' : 
-      type === 'better' ? 'border-success' : 
-      'border-primary'
-    }`}>
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">{getTitle()}</CardTitle>
-          <Badge className={`${getBadgeColor()} text-background font-bold`}>
-            {winRate}% WR
-          </Badge>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Confiança:</span>
-          <Progress value={confidence} className="flex-1" />
-          <span className="text-sm font-medium">{confidence}%</span>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-3 gap-3">
-          {items.map((item, index) => (
-            <div 
-              key={item.id}
-              className="group relative bg-secondary rounded-lg p-3 border border-border hover:border-primary transition-colors"
-            >
-              <div className="aspect-square bg-muted rounded mb-2 flex items-center justify-center text-xs font-medium">
-                {item.image ? (
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover rounded" />
-                ) : (
-                  item.name.slice(0, 2).toUpperCase()
-                )}
-              </div>
-              <h4 className="text-xs font-medium truncate">{item.name}</h4>
-              <p className="text-xs text-accent font-bold">{item.cost}g</p>
-              
-              {/* Tooltip com stats */}
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity bg-popover border border-border rounded-lg p-2 min-w-[150px] z-10">
-                <h5 className="font-medium text-sm mb-1">{item.name}</h5>
-                <ul className="text-xs space-y-0.5">
-                  {item.stats.map((stat, i) => (
-                    <li key={i} className="text-muted-foreground">{stat}</li>
-                  ))}
-                </ul>
-              </div>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-primary rounded flex items-center justify-center text-xs font-bold text-white">
+              IA
             </div>
-          ))}
-        </div>
-        
-        <Button variant={getVariant()} className="w-full">
-          Aplicar Build
-        </Button>
-      </CardContent>
-    </Card>
+            Recomendações de Build Adaptáveis
+          </CardTitle>
+          <CardDescription>
+            A IA analisa seu jogo em tempo real e sugere as melhores builds
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        {builds.map((build, index) => (
+          <Card key={index} className={`border-2 ${getBorderColor(build.type)}`}>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">{build.title}</CardTitle>
+                <Badge variant="secondary">{build.winRate}% WR</Badge>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {t('confidence')}: {build.confidence}%
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                {build.items.map((item, itemIndex) => (
+                  <div key={itemIndex} className="flex items-center justify-between p-2 bg-secondary rounded">
+                    <div>
+                      <div className="font-medium text-sm">{item.name}</div>
+                      <div className="text-xs text-muted-foreground">{item.cost}g</div>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {item.stats[0] || '+40 AD'}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+              <Button className="w-full" variant={build.type === 'perfect' ? 'default' : 'outline'}>
+                {t('apply_build')}
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
   );
 };
-
-export default BuildRecommendation;
