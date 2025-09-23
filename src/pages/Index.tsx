@@ -1,5 +1,10 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { translations } from "@/data/translations";
+import { champions, getTopTierChampions } from "@/data/champions";
+import { items, getMetaItemsForChampion } from "@/data/items";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BuildRecommendation from "@/components/BuildRecommendation";
 import MatchTracker from "@/components/MatchTracker";
@@ -20,6 +25,10 @@ import asheImage from "@/assets/champions/ashe.png";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("builds");
+  const [language, setLanguage] = useState<'pt_BR' | 'en'>('pt_BR');
+  const [devMode, setDevMode] = useState(false);
+  
+  const t = (key: string) => translations[language][key] || key;
 
   // Dados simulados para as builds
   const buildData = {
@@ -76,6 +85,22 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 mr-4">
+                <Button 
+                  variant={devMode ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={() => setDevMode(!devMode)}
+                >
+                  {t('dev_mode')}
+                </Button>
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setLanguage(language === 'pt_BR' ? 'en' : 'pt_BR')}
+                >
+                  {language === 'pt_BR' ? '🇧🇷' : '🇺🇸'}
+                </Button>
+              </div>
               <div className="text-right">
                 <div className="text-sm font-medium">Invocador: <span className="text-accent">SeuNome#BR1</span></div>
                 <div className="text-xs text-muted-foreground">Platina II - 67 LP</div>
@@ -91,22 +116,27 @@ const Index = () => {
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-card">
+          <TabsList className={`grid w-full ${devMode ? 'grid-cols-6' : 'grid-cols-5'} bg-card`}>
             <TabsTrigger value="builds" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Builds IA
+              {t('builds_ia')}
             </TabsTrigger>
             <TabsTrigger value="tracker" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Match Tracker
+              {t('match_tracker')}
             </TabsTrigger>
             <TabsTrigger value="analysis" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Análise Campeão
+              {t('champion_analysis')}
             </TabsTrigger>
             <TabsTrigger value="stats" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Estatísticas
+              {t('statistics')}
             </TabsTrigger>
             <TabsTrigger value="settings" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              Configurações
+              {t('settings')}
             </TabsTrigger>
+            {devMode && (
+              <TabsTrigger value="database" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                Database
+              </TabsTrigger>
+            )}
           </TabsList>
 
           {/* Builds Tab */}
