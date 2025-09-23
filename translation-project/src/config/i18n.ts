@@ -1,8 +1,15 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-import en from '../locales/en/translation.json';
-import ptBR from '../locales/pt-BR/translation.json';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Carregar arquivos JSON
+const en = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales/en/translation.json'), 'utf8'));
+const ptBR = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales/pt-BR/translation.json'), 'utf8'));
 
 i18n
   .use(initReactI18next)
@@ -11,7 +18,7 @@ i18n
       en: { translation: en },
       'pt-BR': { translation: ptBR }
     },
-    lng: localStorage?.getItem?.('lang') || 'pt-BR',
+    lng: typeof window !== 'undefined' && localStorage.getItem('lang') ? localStorage.getItem('lang') : 'pt-BR',
     fallbackLng: 'pt-BR',
     interpolation: { escapeValue: false }
   });

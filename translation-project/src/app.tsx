@@ -1,29 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './config/i18n';
-import LanguageModal from './components/LanguageModal';
 import { useTranslation } from 'react-i18next';
 
-function AppContent() {
+// Componente App com suporte a i18n
+function App() {
   const { t } = useTranslation();
+
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: '20px' }}>
       <h1>{t('welcome')}</h1>
-      <h2>{t('projectInfo')}</h2>
       <p>{t('howToEdit')}</p>
-      <p>{t('technologies')}</p>
     </div>
   );
 }
 
-function App() {
-  return (
-    <>
-      <LanguageModal />
-      <AppContent />
-    </>
-  );
-}
+// Renderização do app
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Elemento root não encontrado');
 
-const root = ReactDOM.createRoot(document.getElementById('root')!);
-root.render(<App />);
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
