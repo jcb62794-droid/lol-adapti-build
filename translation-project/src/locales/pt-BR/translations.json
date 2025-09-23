@@ -1,0 +1,9 @@
+{
+  "greeting": "Olá",
+  "farewell": "Adeus",
+  "welcome": "Bem-vindo ao seu projeto",
+  "choose_language": "Escolha o idioma",
+  "thank_you": "Obrigado",
+  "error": "Erro",
+  "success": "Sucesso"
+}

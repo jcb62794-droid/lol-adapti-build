@@ -1,0 +1,15 @@
+translation-project
+├── src
+│   ├── app.ts
+│   ├── locales
+│   │   ├── en
+│   │   │   └── translations.json
+│   │   └── pt-BR
+│   │       └── translations.json
+│   ├── config
+│   │   └── i18n.ts
+│   └── types
+│       └── index.ts
+├── package.json
+├── tsconfig.json
+└── README.md
