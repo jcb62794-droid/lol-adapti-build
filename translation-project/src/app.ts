@@ -1,5 +1,5 @@
 import express from 'express';
-import './config/i18n.ts';
+import { i18n } from './config/i18n';
 
 const app = express();
 
