@@ -71,8 +71,18 @@ export const BuildRecommendation = () => {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 {build.items.map((item, itemIndex) => (
-                  <div key={itemIndex} className="flex items-center justify-between p-2 bg-secondary rounded">
-                    <div>
+                  <div key={itemIndex} className="flex items-center gap-3 p-2 bg-secondary rounded">
+                    <div className="w-10 h-10 rounded overflow-hidden flex-shrink-0">
+                      <img 
+                        src={item.image} 
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = '/src/assets/items/placeholder.png';
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1">
                       <div className="font-medium text-sm">{item.name}</div>
                       <div className="text-xs text-muted-foreground">{item.cost}g</div>
                     </div>

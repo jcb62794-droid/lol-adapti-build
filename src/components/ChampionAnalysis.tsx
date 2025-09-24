@@ -50,8 +50,15 @@ export const ChampionAnalysis = () => {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-2xl">
-                  {selectedChampion.name.slice(0, 2)}
+                <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                  <img 
+                    src={selectedChampion.image} 
+                    alt={selectedChampion.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = '/src/assets/champions/placeholder.png';
+                    }}
+                  />
                 </div>
                 <div>
                   <CardTitle className="text-2xl">{selectedChampion.name}</CardTitle>
@@ -85,9 +92,16 @@ export const ChampionAnalysis = () => {
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold mb-3">Itens Recomendados</h3>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-3">
                 {selectedChampion.recommendedItems.slice(0, 3).map((itemName, index) => (
-                  <div key={index} className="p-2 bg-secondary rounded text-center">
+                  <div key={index} className="flex items-center gap-2 p-2 bg-secondary rounded">
+                    <div className="w-8 h-8 rounded overflow-hidden flex-shrink-0">
+                      <img 
+                        src="/src/assets/items/placeholder.png"
+                        alt={itemName}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     <div className="text-sm font-medium">{itemName}</div>
                   </div>
                 ))}
