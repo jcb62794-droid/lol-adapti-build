@@ -9,9 +9,14 @@ import { champions, getChampionByName } from '@/data/champions';
 import { items } from '@/data/items';
 
 export const ChampionAnalysis = () => {
+  console.log('ChampionAnalysis component rendering');
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedChampion, setSelectedChampion] = useState(null);
+  
+  console.log('About to call useApp hook');
   const { t } = useApp();
+  console.log('useApp hook called successfully', { t });
 
   const handleAnalyze = () => {
     if (searchTerm.trim()) {

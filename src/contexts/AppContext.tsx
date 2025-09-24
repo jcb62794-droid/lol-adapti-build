@@ -26,8 +26,12 @@ interface AppProviderProps {
 }
 
 export const AppProvider = ({ children }: AppProviderProps) => {
+  console.log('AppProvider rendering');
+  
   const [language, setLanguage] = useState<Language>('pt_BR');
   const [devMode, setDevMode] = useState(false);
+  
+  console.log('AppProvider state initialized', { language, devMode });
 
   const t = (key: string): string => {
     return translations[language][key] || key;
