@@ -4,7 +4,7 @@ import { ChampionAnalysis } from '@/components/ChampionAnalysis';
 import { BuildRecommendation } from '@/components/BuildRecommendation';
 import { RealTimeBuildAnalyzer } from '@/components/RealTimeBuildAnalyzer';
 import { MatchTracker } from '@/components/MatchTracker';
-import AISettings from '@/components/AISettings';
+import { default as AISettings } from '@/components/AISettings';
 import { DatabaseView } from '@/components/DatabaseView';
 import { DevMode } from '@/components/DevMode';
 import { AppProvider } from '@/contexts/AppContext';
