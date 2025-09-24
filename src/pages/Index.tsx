@@ -1,89 +1,112 @@
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BuildRecommendation } from '@/components/BuildRecommendation';
 import { ChampionAnalysis } from '@/components/ChampionAnalysis';
+import { BuildRecommendation } from '@/components/BuildRecommendation';
+import { RealTimeBuildAnalyzer } from '@/components/RealTimeBuildAnalyzer';
 import { MatchTracker } from '@/components/MatchTracker';
+import AISettings from '@/components/AISettings';
+import { DatabaseView } from '@/components/DatabaseView';
 import { DevMode } from '@/components/DevMode';
-import { useApp } from '@/contexts/AppContext';
-import { Brain, BarChart3, Target, Settings, Code } from 'lucide-react';
-import logoImage from '@/assets/lol-ai-logo.jpg';
+import { AppProvider } from '@/contexts/AppContext';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import { populateDatabase } from '@/utils/populateDatabase';
 
 const Index = () => {
-  const [currentBuild, setCurrentBuild] = useState(null);
-  const { t } = useApp();
+  const [devMode, setDevMode] = useState(false);
+  const [isPopulating, setIsPopulating] = useState(false);
+  const { toast } = useToast();
+
+  const handlePopulateDatabase = async () => {
+    setIsPopulating(true);
+    try {
+      const success = await populateDatabase();
+      if (success) {
+        toast({
+          title: "Banco atualizado!",
+          description: "Todos os campeões e itens foram atualizados no banco de dados"
+        });
+      } else {
+        throw new Error("Falha na população");
+      }
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Erro ao popular o banco de dados",
+        variant: "destructive"
+      });
+    } finally {
+      setIsPopulating(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center space-x-4">
-          <img src={logoImage} alt="LoL AI Coach" className="w-12 h-12 rounded-lg" />
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">{t('lol_ai_coach')}</h1>
-            <p className="text-muted-foreground">{t('ai_recommendations')}</p>
+    <AppProvider>
+      <div className="min-h-screen">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                LoL AI Assistant
+              </h1>
+              <p className="text-muted-foreground mt-2">Assistente inteligente para League of Legends</p>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                onClick={handlePopulateDatabase}
+                disabled={isPopulating}
+              >
+                {isPopulating ? 'Atualizando...' : 'Atualizar BD'}
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setDevMode(!devMode)}
+              >
+                {devMode ? 'Modo Normal' : 'Dev Mode'}
+              </Button>
+            </div>
           </div>
+
+          {devMode && <DevMode />}
+
+          <Tabs defaultValue="realtime-analyzer" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-6">
+              <TabsTrigger value="realtime-analyzer">IA Tempo Real</TabsTrigger>
+              <TabsTrigger value="champion-analysis">Análise de Campeão</TabsTrigger>
+              <TabsTrigger value="build-recommendation">Recomendação de Build</TabsTrigger>
+              <TabsTrigger value="match-tracker">Acompanhar Partida</TabsTrigger>
+              <TabsTrigger value="ai-settings">Configurações IA</TabsTrigger>
+              <TabsTrigger value="database">Visualizar BD</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="realtime-analyzer">
+              <RealTimeBuildAnalyzer />
+            </TabsContent>
+
+            <TabsContent value="champion-analysis">
+              <ChampionAnalysis />
+            </TabsContent>
+
+            <TabsContent value="build-recommendation">
+              <BuildRecommendation />
+            </TabsContent>
+
+            <TabsContent value="match-tracker">
+              <MatchTracker />
+            </TabsContent>
+
+            <TabsContent value="ai-settings">
+              <AISettings />
+            </TabsContent>
+
+            <TabsContent value="database">
+              <DatabaseView />
+            </TabsContent>
+          </Tabs>
         </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8">
-      <Tabs defaultValue="builds" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="builds" className="flex items-center gap-2">
-            <Brain className="w-4 h-4" />
-            {t('builds_ia')}
-          </TabsTrigger>
-          <TabsTrigger value="tracker" className="flex items-center gap-2">
-            <Target className="w-4 h-4" />
-            {t('match_tracker')}
-          </TabsTrigger>
-          <TabsTrigger value="analysis" className="flex items-center gap-2">
-            <BarChart3 className="w-4 h-4" />
-            {t('champion_analysis')}
-          </TabsTrigger>
-          <TabsTrigger value="settings" className="flex items-center gap-2">
-            <Settings className="w-4 h-4" />
-            {t('settings')}
-          </TabsTrigger>
-          <TabsTrigger value="dev" className="flex items-center gap-2">
-            <Code className="w-4 h-4" />
-            {t('dev_mode')}
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="builds" className="space-y-4">
-          <BuildRecommendation />
-        </TabsContent>
-
-        <TabsContent value="tracker" className="space-y-4">
-          <MatchTracker />
-        </TabsContent>
-
-        <TabsContent value="analysis" className="space-y-4">
-          <ChampionAnalysis />
-        </TabsContent>
-
-        <TabsContent value="settings" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('settings')}</CardTitle>
-              <CardDescription>Ajuste suas preferências</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Configurações em desenvolvimento...</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="dev" className="space-y-4">
-          <DevMode />
-        </TabsContent>
-      </Tabs>
-      </main>
-    </div>
+      </div>
+    </AppProvider>
   );
 };
 
