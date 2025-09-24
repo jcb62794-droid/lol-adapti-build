@@ -14,7 +14,174 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      champions: {
+        Row: {
+          abilities: Json | null
+          ban_rate: number
+          counters: string[] | null
+          created_at: string
+          difficulty: number
+          id: string
+          image: string | null
+          name: string
+          pick_rate: number
+          recommended_items: string[]
+          role: string
+          stats: Json | null
+          strong_against: string[] | null
+          tags: string[]
+          tier: string
+          title: string | null
+          updated_at: string
+          win_rate: number
+        }
+        Insert: {
+          abilities?: Json | null
+          ban_rate: number
+          counters?: string[] | null
+          created_at?: string
+          difficulty: number
+          id?: string
+          image?: string | null
+          name: string
+          pick_rate: number
+          recommended_items: string[]
+          role: string
+          stats?: Json | null
+          strong_against?: string[] | null
+          tags: string[]
+          tier: string
+          title?: string | null
+          updated_at?: string
+          win_rate: number
+        }
+        Update: {
+          abilities?: Json | null
+          ban_rate?: number
+          counters?: string[] | null
+          created_at?: string
+          difficulty?: number
+          id?: string
+          image?: string | null
+          name?: string
+          pick_rate?: number
+          recommended_items?: string[]
+          role?: string
+          stats?: Json | null
+          strong_against?: string[] | null
+          tags?: string[]
+          tier?: string
+          title?: string | null
+          updated_at?: string
+          win_rate?: number
+        }
+        Relationships: []
+      }
+      items: {
+        Row: {
+          active: string | null
+          build_rate: number | null
+          builds_from: string[] | null
+          builds_into: string[] | null
+          categories: string[]
+          cost: number
+          created_at: string
+          damage_type: string
+          description: string | null
+          id: string
+          image: string | null
+          name: string
+          passive: string | null
+          stats: Json | null
+          tags: string[]
+          tier: string
+          updated_at: string
+          win_rate: number | null
+        }
+        Insert: {
+          active?: string | null
+          build_rate?: number | null
+          builds_from?: string[] | null
+          builds_into?: string[] | null
+          categories: string[]
+          cost: number
+          created_at?: string
+          damage_type: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          name: string
+          passive?: string | null
+          stats?: Json | null
+          tags: string[]
+          tier: string
+          updated_at?: string
+          win_rate?: number | null
+        }
+        Update: {
+          active?: string | null
+          build_rate?: number | null
+          builds_from?: string[] | null
+          builds_into?: string[] | null
+          categories?: string[]
+          cost?: number
+          created_at?: string
+          damage_type?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          name?: string
+          passive?: string | null
+          stats?: Json | null
+          tags?: string[]
+          tier?: string
+          updated_at?: string
+          win_rate?: number | null
+        }
+        Relationships: []
+      }
+      match_analysis: {
+        Row: {
+          ally_team: Json | null
+          analysis_data: Json | null
+          champion_name: string
+          confidence_score: number | null
+          counter_picks: string[] | null
+          created_at: string
+          enemy_team: Json
+          id: string
+          recommended_build: Json
+          user_id: string | null
+          user_lane: string
+        }
+        Insert: {
+          ally_team?: Json | null
+          analysis_data?: Json | null
+          champion_name: string
+          confidence_score?: number | null
+          counter_picks?: string[] | null
+          created_at?: string
+          enemy_team: Json
+          id?: string
+          recommended_build: Json
+          user_id?: string | null
+          user_lane: string
+        }
+        Update: {
+          ally_team?: Json | null
+          analysis_data?: Json | null
+          champion_name?: string
+          confidence_score?: number | null
+          counter_picks?: string[] | null
+          created_at?: string
+          enemy_team?: Json
+          id?: string
+          recommended_build?: Json
+          user_id?: string | null
+          user_lane?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
