@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Zap, Trophy, Shield } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Progress } from '@/components/ui/progress';
+import { champions, getChampionByName } from '@/data/champions';
 
 interface TeamComposition {
   champion: string;
@@ -52,9 +54,12 @@ export const RealTimeBuildAnalyzer = () => {
   ]);
   const [analysis, setAnalysis] = useState<BuildAnalysis | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [phase, setPhase] = useState<'idle' | 'validating' | 'fetching' | 'ai' | 'done'>('idle');
   const { toast } = useToast();
 
   const lanes = ['TOP', 'JUNGLE', 'MID', 'ADC', 'SUPPORT'];
+  const championOptions = champions.map(c => ({ id: c.id, name: c.name }));
 
   const updateEnemyTeam = (index: number, field: keyof TeamComposition, value: string) => {
     const newTeam = [...enemyTeam];
@@ -69,6 +74,7 @@ export const RealTimeBuildAnalyzer = () => {
   };
 
   const analyzeTeamComposition = async () => {
+    // Validação básica
     if (!champion || !lane) {
       toast({
         title: "Informações incompletas",
@@ -78,7 +84,20 @@ export const RealTimeBuildAnalyzer = () => {
       return;
     }
 
-    const filledEnemies = enemyTeam.filter(enemy => enemy.champion.trim() !== '');
+    setPhase('validating');
+    setProgress(15);
+
+    const me = getChampionByName(champion);
+    if (!me) {
+      toast({
+        title: "Campeão não encontrado",
+        description: "Use a lista para selecionar um campeão válido",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const filledEnemies = enemyTeam.filter(e => e.champion.trim() !== '');
     if (filledEnemies.length === 0) {
       toast({
         title: "Time inimigo vazio",
@@ -88,26 +107,48 @@ export const RealTimeBuildAnalyzer = () => {
       return;
     }
 
+    const invalidEnemies = filledEnemies.filter(e => !getChampionByName(e.champion));
+    if (invalidEnemies.length > 0) {
+      toast({
+        title: "Alguns campeões inválidos",
+        description: `Corrija: ${invalidEnemies.map(i => i.champion).join(', ')}`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const filledAllies = allyTeam.filter(a => a.champion.trim() !== '' && !!getChampionByName(a.champion));
+
     setIsAnalyzing(true);
+    setProgress(40);
+    setPhase('fetching');
+
     try {
+      setPhase('ai');
+      setProgress(70);
+
       const { data, error } = await supabase.functions.invoke('analyze-build', {
         body: {
-          champion,
+          champion: me.name,
           lane,
           enemyTeam: filledEnemies,
-          allyTeam: allyTeam.filter(ally => ally.champion.trim() !== '')
+          allyTeam: filledAllies
         }
       });
 
       if (error) throw error;
 
       setAnalysis(data);
+      setPhase('done');
+      setProgress(100);
       toast({
         title: "Análise concluída!",
         description: "Builds otimizadas geradas com IA"
       });
     } catch (error) {
       console.error('Error analyzing build:', error);
+      setPhase('idle');
+      setProgress(0);
       toast({
         title: "Erro na análise",
         description: "Tente novamente em alguns segundos",
@@ -153,11 +194,16 @@ export const RealTimeBuildAnalyzer = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium mb-2 block">Seu Campeão</label>
-              <Input
-                placeholder="Ex: Jinx, Yasuo, Ahri..."
-                value={champion}
-                onChange={(e) => setChampion(e.target.value)}
-              />
+              <Select value={champion} onValueChange={setChampion}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione seu campeão" />
+                </SelectTrigger>
+                <SelectContent>
+                  {championOptions.map((o) => (
+                    <SelectItem key={o.id} value={o.name}>{o.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Sua Lane</label>
@@ -181,12 +227,16 @@ export const RealTimeBuildAnalyzer = () => {
               {enemyTeam.map((enemy, index) => (
                 <div key={index} className="space-y-2">
                   <label className="text-sm font-medium block">{lanes[index]}</label>
-                  <Input
-                    placeholder={`Campeão ${lanes[index]}`}
-                    value={enemy.champion}
-                    onChange={(e) => updateEnemyTeam(index, 'champion', e.target.value)}
-                    className="border-red-200"
-                  />
+                  <Select value={enemy.champion} onValueChange={(val) => updateEnemyTeam(index, 'champion', val)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={`Campeão ${lanes[index]}`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {championOptions.map((o) => (
+                        <SelectItem key={o.id} value={o.name}>{o.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               ))}
             </div>
@@ -199,13 +249,16 @@ export const RealTimeBuildAnalyzer = () => {
               {allyTeam.map((ally, index) => (
                 <div key={index} className="space-y-2">
                   <label className="text-sm font-medium block">{lanes[index]}</label>
-                  <Input
-                    placeholder={`Campeão ${lanes[index]}`}
-                    value={ally.champion}
-                    onChange={(e) => updateAllyTeam(index, 'champion', e.target.value)}
-                    className="border-blue-200"
-                    disabled={lanes[index] === lane} // Desabilita a própria lane
-                  />
+                  <Select value={ally.champion} onValueChange={(val) => updateAllyTeam(index, 'champion', val)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={`Campeão ${lanes[index]}`} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {championOptions.map((o) => (
+                        <SelectItem key={o.id} value={o.name}>{o.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               ))}
             </div>
@@ -229,6 +282,13 @@ export const RealTimeBuildAnalyzer = () => {
               </>
             )}
           </Button>
+
+          {isAnalyzing && (
+            <div className="mt-4 space-y-2">
+              <Progress value={progress} />
+              <div className="text-xs text-muted-foreground">Fase: {phase}</div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

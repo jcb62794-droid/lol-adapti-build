@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,14 +11,28 @@ export const MatchTracker = () => {
   const [gameTime, setGameTime] = useState(0);
   const { t } = useApp();
 
+  const rafIdRef = useRef<number | null>(null);
+  const startRef = useRef<number | null>(null);
+  const accumulatedRef = useRef(0);
+
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isTracking) {
-      interval = setInterval(() => {
-        setGameTime(prev => prev + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
+    if (!isTracking) return;
+
+    const tick = (ts: number) => {
+      if (startRef.current === null) startRef.current = ts;
+      const elapsed = ts - startRef.current + accumulatedRef.current;
+      setGameTime(Math.floor(elapsed / 1000));
+      rafIdRef.current = requestAnimationFrame(tick);
+    };
+
+    rafIdRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+      if (startRef.current !== null) {
+        accumulatedRef.current += performance.now() - startRef.current;
+      }
+      startRef.current = null;
+    };
   }, [isTracking]);
 
   const formatTime = (seconds: number) => {
@@ -40,22 +54,31 @@ export const MatchTracker = () => {
               <Clock className="w-4 h-4" />
               <span>{t('game_time')}: {formatTime(gameTime)}</span>
             </div>
-            <Button 
-              onClick={() => setIsTracking(!isTracking)}
-              variant={isTracking ? "destructive" : "default"}
-            >
-              {isTracking ? (
-                <>
-                  <Pause className="w-4 h-4 mr-2" />
-                  {t('stop_tracking')}
-                </>
-              ) : (
-                <>
-                  <Play className="w-4 h-4 mr-2" />
-                  {t('start_tracking')}
-                </>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button 
+                onClick={() => setIsTracking(!isTracking)}
+                variant={isTracking ? "destructive" : "default"}
+              >
+                {isTracking ? (
+                  <>
+                    <Pause className="w-4 h-4 mr-2" />
+                    {t('stop_tracking')}
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-4 h-4 mr-2" />
+                    {t('start_tracking')}
+                  </>
+                )}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => { setGameTime(0); accumulatedRef.current = 0; startRef.current = null; }}
+                disabled={gameTime === 0 && !isTracking}
+              >
+                Resetar
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
