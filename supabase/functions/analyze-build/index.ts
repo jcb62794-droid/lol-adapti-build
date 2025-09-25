@@ -25,14 +25,42 @@ serve(async (req) => {
     console.log('Analyzing build for:', { champion, lane, enemyTeam, allyTeam });
 
     // Get champion data from database
-    const { data: championData, error: championError } = await supabase
+    // Try strict match first (case-insensitive), then fallback
+    let { data: championData, error: championError } = await supabase
       .from('champions')
       .select('*')
-      .eq('name', champion)
-      .single();
+      .ilike('name', champion) // case-insensitive exact match
+      .maybeSingle();
 
     if (championError) {
-      throw new Error(`Champion not found: ${champion}`);
+      console.warn('Error fetching champion (initial):', championError);
+    }
+
+    // Second attempt: trim/normalize apostrophes and whitespace
+    if (!championData) {
+      const normalized = champion.replace(/["“”]/g, '"').replace(/[’`´']/g, "'").trim();
+      const { data: fallbackChampion, error: fallbackError } = await supabase
+        .from('champions')
+        .select('*')
+        .ilike('name', normalized)
+        .maybeSingle();
+      if (fallbackError) {
+        console.warn('Error fetching champion (normalized):', fallbackError);
+      }
+      championData = fallbackChampion as typeof championData;
+    }
+
+    // Final fallback: synthesize minimal champion data to avoid hard failure
+    if (!championData) {
+      console.warn(`Champion not found in DB, using fallback: ${champion}`);
+      championData = {
+        name: champion,
+        role: lane,
+        tier: 'B',
+        win_rate: 50,
+        difficulty: 5,
+        tags: [],
+      } as any;
     }
 
     // Get all items from database
@@ -57,8 +85,8 @@ Tier atual: ${championData.tier}
 Win Rate: ${championData.win_rate}%
 Difficulty: ${championData.difficulty}/10
 
-TIME INIMIGO: ${enemyTeam.map(e => `${e.champion} (${e.lane})`).join(', ')}
-TIME ALIADO: ${allyTeam ? allyTeam.map(a => `${a.champion} (${a.lane})`).join(', ') : 'Não informado'}
+TIME INIMIGO: ${ (enemyTeam as Array<{ champion: string; lane: string }>).map((e) => `${e.champion} (${e.lane})`).join(', ')}
+TIME ALIADO: ${allyTeam ? (allyTeam as Array<{ champion: string; lane: string }>).map((a) => `${a.champion} (${a.lane})`).join(', ') : 'Não informado'}
 
 ITENS DISPONÍVEIS:
 ${itemsData.map(item => `${item.name} - ${item.cost}g - ${item.damage_type} - Categorias: ${item.categories.join(', ')}`).join('\n')}
@@ -166,7 +194,8 @@ Seja preciso e use apenas nomes de itens que existem na lista fornecida.
 
   } catch (error) {
     console.error('Error in analyze-build function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    const message = (error as Error)?.message || 'Unknown error';
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

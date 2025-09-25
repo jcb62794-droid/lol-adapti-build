@@ -122,8 +122,9 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Erro no scraping dos itens:', error);
+    const message = (error as Error)?.message || 'Erro desconhecido';
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: message,
       items: [] 
     }), {
       status: 500,

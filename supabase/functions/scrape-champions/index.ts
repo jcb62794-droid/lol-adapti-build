@@ -120,8 +120,9 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Erro no scraping:', error);
+    const message = (error as Error)?.message || 'Erro desconhecido';
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: message,
       champions: [] 
     }), {
       status: 500,
